@@ -5,10 +5,12 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using ClientProject;
 
+
 namespace ServerProject
 {
     class Server
     {
+        
         public string ipAddr;
         public int port;
         public IPEndPoint ipPoint;
@@ -32,7 +34,7 @@ namespace ServerProject
 
                 this.socket.Bind(ipPoint);
                 this.socket.Listen(10);
-                Console.WriteLine("Сервер запущен. Ожидание подключений...");
+                Console.WriteLine("------Waiting for second player------");
 
             }
             catch (Exception ex)
@@ -42,7 +44,21 @@ namespace ServerProject
             }
 
         }
-        public void Connect()
+        public void ConnectOne()
+        {
+            bool check = true;
+            while (check)
+            {
+                this.socketclient = this.socket.Accept();
+                clients.Add(new Client(socketclient));
+                if (clients.Count > 0)
+                {
+                    check = false;
+                }
+            }
+
+        }
+        public void Connects()
         {
             while (true)
             {
@@ -54,6 +70,7 @@ namespace ServerProject
         }
         public StringBuilder GetMsg()
         {
+
             StringBuilder builder = new StringBuilder();
             int bytes = 0;
             byte[] data = new byte[256];
@@ -76,9 +93,16 @@ namespace ServerProject
             foreach (var item in clients)
             {
                 item.socket.Send(Encoding.Unicode.GetBytes(message));
-
             }
         }
+        public void DrawField()
+        {
 
+            Console.WriteLine($"{TicTacToe.Field[0, 0]}|{TicTacToe.Field[0, 1]}|{TicTacToe.Field[0, 2]}");
+            Console.WriteLine($"—————");
+            Console.WriteLine($"{TicTacToe.Field[1, 0]}|{TicTacToe.Field[1, 1]}|{TicTacToe.Field[1, 2]}");
+            Console.WriteLine($"—————");
+            Console.WriteLine($"{TicTacToe.Field[2, 0]}|{TicTacToe.Field[2, 1]}|{TicTacToe.Field[2, 2]}\n");
+        }
     }
 }
