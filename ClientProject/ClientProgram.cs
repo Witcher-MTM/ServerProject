@@ -23,11 +23,11 @@ namespace ClientProject
             {
                 Console.WriteLine(ex.Message);
                 throw;
-                throw;
+                
             }
 
 
-            Console.ReadLine();
+            
         }
     }
 }
