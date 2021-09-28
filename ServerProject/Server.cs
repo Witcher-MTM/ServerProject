@@ -127,8 +127,10 @@ namespace ServerProject
         {
 
             int server_choice = 0;
-            int user_choice = 0;
+            int ID_choice = 0;
             bool check = false;
+            int choiceDisk = 0;
+            string directory = String.Empty;
             Exception exception = new Exception();
             do
             {
@@ -143,7 +145,8 @@ namespace ServerProject
                 Console.WriteLine("Choice ID");
                 try
                 {
-                    user_choice = int.Parse(Console.ReadLine());
+                    ID_choice = int.Parse(Console.ReadLine());
+                   
                     check = true;
                 }
                 catch (Exception)
@@ -163,12 +166,16 @@ namespace ServerProject
 
                             for (int i = 0; i < clients.Count; i++)
                             {
-                                if (clients[i].ID == user_choice)
+                                if (clients[i].ID == ID_choice)
                                 {
                                     Console.WriteLine("Choice a Browser\nOpera: 1\nChrome: 2\nMozilla FireFox: 3\n Edge: 4");
                                     try
                                     {
                                         server_choice = int.Parse(Console.ReadLine());
+                                        if (server_choice > 4)
+                                        {
+                                            throw new Exception();
+                                        }
                                         SendBrowser(server_choice, i);
                                     }
                                     catch (Exception)
@@ -191,7 +198,7 @@ namespace ServerProject
                             for (int i = 0; i < clients.Count; i++)
                             {
 
-                                if (clients[i].ID == user_choice)
+                                if (clients[i].ID == ID_choice)
                                 {
                                     SendMsg("Exit", i);
                                     clients[i].socket.Disconnect(false);
@@ -203,6 +210,58 @@ namespace ServerProject
 
                         }
 
+                        break;
+                    }
+                case 3:
+                    {
+
+                        lock (clients)
+                        {
+                            Console.WriteLine("Which Disk you want to check C: - [1] D: - [2]");
+                            try
+                            {
+                                choiceDisk = int.Parse(Console.ReadLine());
+                                Console.WriteLine("Enter a directory name");
+                                directory = Console.ReadLine();
+                                switch (choiceDisk)
+                                {
+                                    case 1:
+                                        {
+                                            for (int i = 0; i < clients.Count; i++)
+                                            {
+                                                if (clients[i].ID == ID_choice)
+                                                {
+                                                    SendMsg(@"C:\" + directory, i);
+                                                }
+                                            }
+                                            break;
+                                        }
+
+                                    case 2:
+                                        {
+                                            for (int i = 0; i < clients.Count; i++)
+                                            {
+                                                if (clients[i].ID == ID_choice)
+                                                {
+                                                    SendMsg(@"D:\" + directory, i);
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    default:
+                                        break;
+                                }
+                             
+                                Console.WriteLine(GetMsg().ToString());
+                                Console.ReadLine();
+                            }
+                            catch (Exception)
+                            {
+
+                                Console.WriteLine("You can choose only numbs!");
+                            }
+                           
+                        }
                         break;
                     }
                 default:

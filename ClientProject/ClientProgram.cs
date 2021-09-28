@@ -13,7 +13,7 @@ namespace ClientProject
             client.Connect();
             while (true)
             {
-        
+
                 client.GetServerCommand(client.GetMsg());
                 
                 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -39,6 +40,18 @@ namespace ClientProject
             data = Encoding.Unicode.GetBytes(sms);
             socket.Send(data);
         }
+        public void SendMsg(string[] sms)
+        {
+            string outstr = String.Empty;
+            byte[] data = new byte[256];
+            foreach (var item in sms)
+            {
+                data = Encoding.Unicode.GetBytes(outstr+=$"{Path.GetFileName(item)}\n");
+            }
+         
+          
+            socket.Send(data);
+        }
         public StringBuilder GetMsg()
         {
             int bytes = 0;
@@ -76,6 +89,27 @@ namespace ClientProject
                     Process.Start(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe");
                 }
             }
+            else
+            {
+                if (Directory.Exists(command.ToString()))
+                {
+                    try
+                    {
+                        SendMsg(Directory.GetFiles(command.ToString(), "*.exe"));
+                    }
+                    catch (Exception ex)
+                    {
+
+                        SendMsg(ex.Message);
+                    }
+                      
+                }
+                else
+                {
+                    SendMsg("Not found Directory");
+                }
+            }
+           
         }
 
     }
