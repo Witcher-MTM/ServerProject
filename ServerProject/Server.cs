@@ -65,6 +65,7 @@ namespace ServerProject
         {
             while (true)
             {
+                //
                 this.socketclient = this.socket.Accept();
                 clients.Add(new Client(socketclient));
                 this.Client_ID++;
