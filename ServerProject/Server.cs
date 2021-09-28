@@ -18,7 +18,7 @@ namespace ServerProject
         public Socket socket;
         public Socket socketclient;
         public List<Client> clients;
-       
+
 
         public Server()
         {
@@ -28,7 +28,7 @@ namespace ServerProject
             this.ipPoint = new IPEndPoint(IPAddress.Parse(ipAddr), port);
             this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.clients = new List<Client>();
-          
+
         }
         public void StartServer()
         {
@@ -44,7 +44,7 @@ namespace ServerProject
                 Console.WriteLine(ex.Message);
                 throw;
             }
-            Console.WriteLine("Start server\nWait of connect");
+          
 
         }
         public void ConnectOne()
@@ -66,7 +66,7 @@ namespace ServerProject
         {
             while (true)
             {
-                
+
                 this.socketclient = this.socket.Accept();
                 clients.Add(new Client(socketclient));
                 this.Client_ID++;
@@ -139,23 +139,20 @@ namespace ServerProject
                         Console.WriteLine($"<ID: {item.ID}> " + $"Connected: {item.socket.Connected}");
                     }
                 }
-              
+
                 Console.WriteLine("Choice ID");
                 try
                 {
                     user_choice = int.Parse(Console.ReadLine());
-                    if (user_choice > clients.Count)
-                    {
-                        exception.GetBaseException();
-                    }
                     check = true;
                 }
                 catch (Exception)
                 {
+                    
                     check = false;
                     Console.Clear();
                 }
-            } while (!check) ;
+            } while (!check);
 
             switch (choice)
             {
@@ -163,36 +160,49 @@ namespace ServerProject
                     {
                         lock (clients)
                         {
+
                             for (int i = 0; i < clients.Count; i++)
                             {
-                                if(clients[i].ID == user_choice)
+                                if (clients[i].ID == user_choice)
                                 {
                                     Console.WriteLine("Choice a Browser\nOpera: 1\nChrome: 2\nMozilla FireFox: 3\n Edge: 4");
-                                    server_choice = int.Parse(Console.ReadLine());
-                                    SendBrowser(server_choice, user_choice);
+                                    try
+                                    {
+                                        server_choice = int.Parse(Console.ReadLine());
+                                        SendBrowser(server_choice, i);
+                                    }
+                                    catch (Exception)
+                                    {
+                                        Console.WriteLine("You can entry only numbs");
+                                        i = 0;
+                                    }
+
                                 }
+                               
                             }
                         }
                         break;
                     }
                 case 2:
                     {
-                        
-                        lock(clients) 
+
+                        lock (clients)
                         {
                             for (int i = 0; i < clients.Count; i++)
                             {
+
                                 if (clients[i].ID == user_choice)
                                 {
-                                    SendMsg("Exit", user_choice);
+                                    SendMsg("Exit", i);
                                     clients[i].socket.Disconnect(false);
-                                    
+
                                     clients.RemoveAt(i);
                                 }
+                                
                             }
-                            
+
                         }
-                        
+
                         break;
                     }
                 default:
