@@ -22,7 +22,7 @@ namespace ServerProject
                 {
                     Console.WriteLine("-Start Browser: 1\n-Disconnect from server: 2");
                     server.SendCommand(int.Parse(Console.ReadLine()));
-                   
+                    Console.Clear();
                    
                 }
             }

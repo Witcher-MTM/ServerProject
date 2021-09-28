@@ -15,7 +15,10 @@ namespace ClientProject
             {
         
                 client.GetServerCommand(client.GetMsg());
+                
+                
             }
+          
         }
     }
 }

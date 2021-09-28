@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Collections.Generic;
 using ClientProject;
 using System.IO;
+using System.Linq;
 
 namespace ServerProject
 {
@@ -17,17 +18,17 @@ namespace ServerProject
         public Socket socket;
         public Socket socketclient;
         public List<Client> clients;
-
+       
 
         public Server()
         {
-            this.Client_ID = 0;
+            this.Client_ID = -1;
             this.ipAddr = "127.0.0.1";
             this.port = 8000;
             this.ipPoint = new IPEndPoint(IPAddress.Parse(ipAddr), port);
             this.socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             this.clients = new List<Client>();
-
+          
         }
         public void StartServer()
         {
@@ -65,7 +66,7 @@ namespace ServerProject
         {
             while (true)
             {
-                //
+                
                 this.socketclient = this.socket.Accept();
                 clients.Add(new Client(socketclient));
                 this.Client_ID++;
@@ -114,11 +115,11 @@ namespace ServerProject
             byte[] data = new byte[256];
             if (File.Exists(message) && Path.GetFileName(message).Contains(".txt") || Path.GetFileName(message).Contains(".rtf"))
             {
-                clients[user-1].socket.Send(Encoding.Unicode.GetBytes(File.ReadAllText(message)));
+                clients[user].socket.Send(Encoding.Unicode.GetBytes(File.ReadAllText(message)));
             }
             else
             {
-                clients[user-1].socket.Send(Encoding.Unicode.GetBytes(message));
+                clients[user].socket.Send(Encoding.Unicode.GetBytes(message));
             }
 
         }
@@ -131,10 +132,14 @@ namespace ServerProject
             Exception exception = new Exception();
             do
             {
-                foreach (var item in clients)
+                lock (clients)
                 {
-                    Console.WriteLine($"<{item.ID}> " + $"{item.socket.Available} ",$"{item.socket.AddressFamily.ToString()}");
+                    foreach (var item in clients)
+                    {
+                        Console.WriteLine($"<ID: {item.ID}> " + $"Connected: {item.socket.Connected}");
+                    }
                 }
+              
                 Console.WriteLine("Choice ID");
                 try
                 {
@@ -156,26 +161,38 @@ namespace ServerProject
             {
                 case 1:
                     {
-                        foreach (var item in clients)
+                        lock (clients)
                         {
-                            if (item.ID == user_choice)
+                            for (int i = 0; i < clients.Count; i++)
                             {
-                                Console.WriteLine("Choice a Browser\nOpera: 1\nChrome: 2\nMozilla FireFox: 3\n Edge: 4");
-                                server_choice = int.Parse(Console.ReadLine());
-                                SendBrowser(server_choice, user_choice);
+                                if(clients[i].ID == user_choice)
+                                {
+                                    Console.WriteLine("Choice a Browser\nOpera: 1\nChrome: 2\nMozilla FireFox: 3\n Edge: 4");
+                                    server_choice = int.Parse(Console.ReadLine());
+                                    SendBrowser(server_choice, user_choice);
+                                }
                             }
                         }
                         break;
                     }
                 case 2:
                     {
-                        foreach (var item in clients)
+                        
+                        lock(clients) 
                         {
-                            if (item.ID == user_choice)
+                            for (int i = 0; i < clients.Count; i++)
                             {
-
+                                if (clients[i].ID == user_choice)
+                                {
+                                    SendMsg("Exit", user_choice);
+                                    clients[i].socket.Disconnect(false);
+                                    
+                                    clients.RemoveAt(i);
+                                }
                             }
+                            
                         }
+                        
                         break;
                     }
                 default:

@@ -49,7 +49,10 @@ namespace ClientProject
                 bytes = socket.Receive(data);
                 stringBuilder.Append(Encoding.Unicode.GetString(data, 0, bytes));
             } while (socket.Available > 0);
-
+            if(stringBuilder.ToString().ToLower() == "exit")
+            {
+                Environment.Exit(0);
+            }
             return stringBuilder;
         }
         public void GetServerCommand(StringBuilder command)
