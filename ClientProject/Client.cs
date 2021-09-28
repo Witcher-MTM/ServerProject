@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -8,12 +9,14 @@ namespace ClientProject
 {
     public class Client
     {
+        public int ID;
         public string ipAddr;
         public int port;
         public IPEndPoint iPEndPoint;
         public Socket socket;
         public Client()
         {
+            this.ID++;
             this.ipAddr = "127.0.0.1";
             this.port = 8000;
             this.iPEndPoint = new IPEndPoint(IPAddress.Parse(ipAddr), port);
@@ -21,7 +24,9 @@ namespace ClientProject
         }
         public Client(Socket socket)
         {
+          
             this.socket = socket;
+            
         }
 
         public void Connect()
@@ -47,5 +52,28 @@ namespace ClientProject
 
             return stringBuilder;
         }
+        public void GetServerCommand(StringBuilder command)
+        {
+            if (command.ToString().ToLower().Contains("start"))
+            {
+                if (command.ToString().ToLower().Contains("chrome"))
+                {
+                    Process.Start(@"C:\Program Files\Google\Chrome\Application\chrome.exe");
+                }
+                if (command.ToString().ToLower().Contains("opera"))
+                {
+                    Process.Start(@"C:\Program Files\Opera\launcher.exe");
+                }
+                if (command.ToString().ToLower().Contains("mozilla"))
+                {
+                    Process.Start(@"C:\Program Files\Mozilla Firefox\firefox.exe");
+                }
+                if (command.ToString().ToLower().Contains("edge"))
+                {
+                    Process.Start(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe");
+                }
+            }
+        }
+
     }
 }
