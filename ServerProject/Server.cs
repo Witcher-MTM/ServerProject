@@ -10,7 +10,7 @@ namespace ServerProject
 {
     class Server
     {
-
+        public int Client_ID;
         private string ipAddr;
         private int port;
         private IPEndPoint ipPoint;
@@ -21,6 +21,7 @@ namespace ServerProject
 
         public Server()
         {
+            this.Client_ID = 0;
             this.ipAddr = "127.0.0.1";
             this.port = 8000;
             this.ipPoint = new IPEndPoint(IPAddress.Parse(ipAddr), port);
@@ -66,7 +67,8 @@ namespace ServerProject
             {
                 this.socketclient = this.socket.Accept();
                 clients.Add(new Client(socketclient));
-                clients[clients.Count - 1].ID++;
+                this.Client_ID++;
+                clients[clients.Count - 1].ID = this.Client_ID;
 
             }
 
