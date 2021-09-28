@@ -10,22 +10,15 @@ namespace ClientProject
         static void Main(string[] args)
         {
             Client client = new Client();
-            try
+            client.Connect();
+            while (true)
             {
-                client.Connect();
-                Console.WriteLine(client.GetMsg().ToString());
-                while (true)
-                {
-                   
-                    Console.WriteLine(client.GetMsg().ToString());
-                    
-                }
+        
+                client.GetServerCommand(client.GetMsg());
+                
+                
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-                Console.ReadLine();
-            }
+          
         }
     }
 }

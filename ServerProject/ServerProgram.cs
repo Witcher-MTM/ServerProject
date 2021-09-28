@@ -13,24 +13,22 @@ namespace ServerProject
         {
             Server server = new Server();
             server.StartServer();
-           
+            
             try
-
             {
                 Task.Factory.StartNew(() => server.Connects());
                
                 while (true)
                 {
-                   
-                    Console.WriteLine("Enter a message");
-                    server.SendMsg(Console.ReadLine());
+                    Console.WriteLine("-Start Browser: 1\n-Disconnect from server: 2");
+                    server.SendCommand(int.Parse(Console.ReadLine()));
+                    Console.Clear();
                    
                 }
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.Message);
-                throw;
             }
            
         }
